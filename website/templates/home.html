@@ -1,0 +1,233 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Home{% endblock %}
+
+{% block extra_styles %}
+<link rel="stylesheet" href="static/css/home.css">
+{% endblock %}
+
+{% block content %}
+<div class="container home-container">
+    <!-- Welcome Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-6 fw-bold text-dark mb-2">
+                Welcome back, {{ user.full_name }}!
+            </h1>
+            <p class="text-muted">Here's what's happening with your tasks and reminders</p>
+        </div>
+    </div>
+
+    <!-- Stats Overview -->
+    <div class="stats-overview">
+        <div class="row">
+            <div class="col-md-3 col-6">
+                <div class="stat-item">
+                    <div class="stat-number">{{ payment_reminders|length }}</div>
+                    <div class="stat-label">Payment Reminders</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-item">
+                    <div class="stat-number">{{ todos|length }}</div>
+                    <div class="stat-label">Active Todos</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-item">
+                    <div class="stat-number">{{ notes|length }}</div>
+                    <div class="stat-label">Notes</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-item">
+                    <div class="stat-number">{{ completed_todos }}</div>
+                    <div class="stat-label">Completed Today</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Payment Reminders Section -->
+        <div class="col-lg-6 mb-4">
+            <div class="dashboard-card">
+                <div class="card-header payment-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-credit-card me-2"></i>
+                        Upcoming Payments
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    {% if payment_reminders %}
+                        <div class="list-group list-group-flush">
+                            {% for reminder in payment_reminders[:5] %}
+                            <a href="{{ url_for('views.payments', payment_id=reminder.id) }}" 
+                            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1 fw-bold">{{ reminder.name }}</h6>
+                                    <small class="payment-date">
+                                        <i class="fas fa-calendar me-1"></i>
+                                        Due: {{ reminder.pmt_date.strftime('%b %d, %Y') }}
+                                    </small>
+                                    {% if reminder.notes %}
+                                    <br><small class="text-muted">{{ reminder.notes[:50] }}{% if reminder.notes|length > 50 %}...{% endif %}</small>
+                                    {% endif %}
+                                </div>
+                                <div class="text-end">
+                                    <div class="payment-amount">${{ "%.2f"|format(reminder.pmt_amount) }}</div>
+                                    {% set days_until = (reminder.pmt_date - today).days %}
+                                    {% if days_until <= 3 %}
+                                        <span class="badge-urgent">Urgent</span>
+                                    {% elif days_until <= 7 %}
+                                        <span class="badge-due-soon">Due Soon</span>
+                                    {% endif %}
+                                </div>
+                            </a>
+                            {% endfor %}
+                        </div>
+                        {% if payment_reminders|length > 5 %}
+                        <div class="card-footer text-center bg-light">
+                            <a href="{{ url_for('views.payments') }}" class="text-decoration-none">
+                                View all {{ payment_reminders|length }} payment reminders
+                            </a>
+                        </div>
+                        {% endif %}
+                    {% else %}
+                        <div class="empty-state text-center p-3">
+                            <i class="fas fa-credit-card fa-2x mb-2"></i>
+                            <h6>No payment reminders</h6>
+                            <p class="small text-muted">Add a payment reminder to stay on top of your bills</p>
+                            <a href="{{ url_for('views.payments') }}" class="btn btn-primary btn-sm">Add Payment</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Todos Section -->
+        <div class="col-lg-6 mb-4">
+            <div class="dashboard-card">
+                <div class="card-header todo-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-tasks me-2"></i>
+                        Active Todos
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    {% if todos %}
+                        <div class="list-group list-group-flush">
+                            {% for todo in todos[:5] %}
+                            <a href="{{ url_for('views.edit_todo', todo_id=todo.id) }}" 
+                            class="list-group-item list-group-item-action">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 class="mb-0 fw-bold">{{ todo.name }}</h6>
+                                    <span class="todo-status 
+                                        {% if todo.status == 0 %}status-pending
+                                        {% elif todo.status == 1 %}status-in-progress
+                                        {% elif todo.status == 2 %}status-completed
+                                        {% endif %}">
+                                        {% if todo.status == 0 %}Pending
+                                        {% elif todo.status == 1 %}In Progress
+                                        {% elif todo.status == 2 %}Completed
+                                        {% endif %}
+                                    </span>
+                                </div>
+                                {% if todo.due_date %}
+                                <small class="text-muted">
+                                    <i class="fas fa-clock me-1"></i>
+                                    Due: {{ todo.due_date.strftime('%b %d, %Y') }}
+                                </small>
+                                {% endif %}
+                                <div class="mt-2">
+                                    <div class="progress">
+                                        <div class="progress-bar" data-width="{{ todo.completion_percentage }}"></div>
+                                    </div>
+                                    <small class="text-muted">{{ "%.0f"|format(todo.completion_percentage) }}% complete</small>
+                                </div>
+                            </a>
+                            {% endfor %}
+                        </div>
+                        {% if todos|length > 5 %}
+                        <div class="card-footer text-center bg-light">
+                            <a href="/todos" class="text-decoration-none">
+                                View all {{ todos|length }} todos
+                            </a>
+                        </div>
+                        {% endif %}
+                    {% else %}
+                        <div class="empty-state">
+                            <i class="fas fa-tasks"></i>
+                            <h6>No active todos</h6>
+                            <p class="small text-muted">Create a todo to organize your tasks</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notes Section -->
+    <div class="row">
+        <div class="col-12">
+            <div class="dashboard-card">
+                <div class="card-header note-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-sticky-note me-2"></i>
+                        Recent Notes
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    {% if notes %}
+                        <div class="row g-0">
+                            {% for note in notes[:6] %}
+                            <a href="{{ url_for('views.notes', note_id=note.id) }}" 
+                            class="list-group-item list-group-item-action">
+                                <h6 class="mb-2 fw-bold">{{ note.title or 'Untitled Note' }}</h6>
+                                <div class="note-preview mb-2">
+                                    {{ note.text_content[:100] }}{% if note.text_content|length > 100 %}...{% endif %}
+                                </div>
+                                <small class="note-date">
+                                    <i class="fas fa-calendar me-1"></i>
+                                    {{ note.last_modified_date.strftime('%b %d, %Y at %I:%M %p') }}
+                                </small>
+                            </a>
+                            {% endfor %}
+                        </div>
+                        {% if notes|length > 6 %}
+                        <div class="card-footer text-center bg-light">
+                            <a href="/notes" class="text-decoration-none">
+                                View all {{ notes|length }} notes
+                            </a>
+                        </div>
+                        {% endif %}
+                    {% else %}
+                        <div class="empty-state">
+                            <i class="fas fa-sticky-note"></i>
+                            <h6>No notes yet</h6>
+                            <p class="small text-muted">Start taking notes to capture your thoughts and ideas</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="quick-actions">
+    <button class="quick-action-btn btn-payment" title="Add Payment Reminder" onclick="window.location.href='/payments?show_form=1'">
+        <i class="fas fa-plus"></i>
+    </button>
+    <button class="quick-action-btn btn-todo" title="Add Todo" onclick="window.location.href='/add-todo'">
+        <i class="fas fa-tasks"></i>
+    </button>
+    <button class="quick-action-btn btn-note" title="Add Note" onclick="window.location.href='/notes'">
+        <i class="fas fa-sticky-note"></i>
+    </button>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/home.js') }}"></script>
+{% endblock %}

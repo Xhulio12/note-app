@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}Payment Reminders{% endblock %}
+
+{% block extra_styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/payments.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container pmt-container">
+    <h2 class="mb-4">Payment Reminders</h2>
+    <button class="btn btn-success mb-3" onclick="resetForm()">Add Payment</button>
+
+    {% if payments %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Due Date</th>
+                <th>Amount</th>
+                <th>Active</th>
+                <th>Notes</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for payment in payments %}
+            <tr
+                data-id="{{ payment.id }}"
+                data-name="{{ payment.name | e }}"
+                data-pmt_date="{{ payment.pmt_date.strftime('%Y-%m-%d') if payment.pmt_date else '' }}"
+                data-pmt_amount="{{ payment.pmt_amount }}"
+                data-notes="{{ payment.notes | e }}"
+                data-is_active="{{ 'true' if payment.is_active else 'false' }}"
+            >
+                <td>{{ payment.name }}</td>
+                <td>{{ payment.pmt_date.strftime('%d.%m.%Y') if payment.pmt_date else '' }}</td>
+                <td>{{ payment.pmt_amount }}</td>
+                <td>{{ "Yes" if payment.is_active else "No" }}</td>
+                <td>{{ payment.notes or '-' }}</td>
+                <td>
+                    <button class="btn btn-primary btn-sm edit-payment-btn">Edit</button>
+                    <form action="{{ url_for('views.delete_payment', id=payment.id) }}" method="POST" style="display:inline-block;">
+                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p>No payments found.</p>
+    {% endif %}
+</div>
+
+<!-- Modal for Add/Edit Payment -->
+<div class="modal fade" id="paymentModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <form method="POST" class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="paymentModalLabel">Add Payment</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+          <input type="hidden" name="payment_id" id="modal_payment_id">
+          <div class="mb-3">
+              <label class="form-label">Name</label>
+              <input type="text" class="form-control" name="name" id="modal_name" required>
+          </div>
+          <div class="mb-3">
+              <label class="form-label">Due Date</label>
+              <input type="date" class="form-control" name="pmt_date" id="modal_pmt_date" required>
+          </div>
+          <div class="mb-3">
+              <label class="form-label">Amount</label>
+              <input type="number" step="0.01" class="form-control" name="pmt_amount" id="modal_pmt_amount" required>
+          </div>
+          <div class="mb-3 form-check">
+              <input type="checkbox" class="form-check-input" name="is_active" id="modal_is_active" checked>
+              <label class="form-check-label">Active</label>
+          </div>
+          <div class="mb-3">
+              <label class="form-label">Notes</label>
+              <textarea class="form-control" name="notes" id="modal_notes"></textarea>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-success">Save</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/payments.js') }}"></script>
+{% endblock %}

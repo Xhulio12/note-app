@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}Login - NotesApp{% endblock %}
+
+{% block extra_styles %}
+<link rel="stylesheet"  href="static/css/login.css">
+{% endblock %}
+
+{% block navbar_logo %}
+<a href="{{ url_for('auth.login') }}" class="navbar-brand">
+	<img src="static/assets/logo.png" width="60" height="80" alt="logo">
+</a>
+{% endblock navbar_logo %}
+
+{% block navbar_links %}
+<li class="nav-item mx-auto">
+	<a href="{{ url_for('views.home') }}" class="nav-link nav-under">About Us</a>
+</li>
+<li class="nav-item mx-auto">
+	<a href="{{ url_for('views.home') }}#contact" class="nav-link nav-under">Get in Touch</a>
+</li>
+{% endblock %}
+
+{% block content %}
+<section class="container login-container" id="login-container">
+	<h1 class="h1 text-center mb-5">Create an Account or Log in</h1>
+	<div class="d-flex flex-column flex-md-row justify-content-center align-items-center gap-5">
+		<div class="form-container sign-up-container">
+			<form method="POST" action="#" class="d-flex flex-column gap-3">
+				<h2 class="h2">Create Account</h2>
+				<input type="hidden" name="form_type" value="signup">
+				<input class="form-input" type="text" name="first_name" placeholder="First Name" maxlength="20" />
+				<input class="form-input" type="text" name="last_name" placeholder="Last Name" maxlength="60" />
+				<input class="form-input" type="email" name="signin_email" placeholder="Email" maxlength="150" />
+				<input class="form-input" type="password" name="signin_password" placeholder="Password (10 Max Characters)"
+					maxlength="10" />
+				<input class="form-input" type="password" name="confirmed_password" placeholder="Confirm Password"
+					maxlength="10" />
+				<button type="submit">Sign Up</button>
+			</form>
+		</div>
+		<div class="form-container sign-in-container">
+			<form method="POST" action="#" class="d-flex flex-column gap-3">
+				<h2 class="h2">Log in</h2>
+				<input type="hidden" name="form_type" value="login">
+				<input class="form-input" type="text" name="login_email" placeholder="Email or Username" />
+				<input class="form-input" type="password" name="login_password" placeholder="Password" />
+				<div class="form-check">
+					<input type="checkbox" id="remember_me" name="remember_me" value="1" class="form-check-input">
+					<label for="remember_me" class="form-check-label">Remember me</label>
+				</div>
+				<a href="/forgot-password" class="second-header">Forgot your password?</a>
+				<button type="submit">Log In</button>
+			</form>
+		</div>
+	</div>
+</section>
+{% endblock  %}

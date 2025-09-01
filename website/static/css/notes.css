@@ -1,0 +1,116 @@
+.notes-container {
+    margin-top: 15vh;
+    max-width: 900px;
+    background: #ffffff;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Heading */
+.notes-container h1 {
+    font-size: 2.5rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    color: #2c3e50;
+    text-align: center;
+}
+
+/* Form */
+.notes-container form:nth-child(1) {
+    margin-bottom: 2rem;
+    margin-right: 2rem;
+}
+
+.notes-container .btn-group {
+    gap: 1rem;
+}
+
+.notes-container .btn-group button {
+    border-radius: 5px !important;
+}
+
+.notes-container input[type="text"],
+.notes-container textarea {
+    margin-bottom: 1rem;
+    border-radius: 0.75rem;
+    border: 1px solid #ddd;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    width: 100%;
+    resize: vertical;
+    transition: border-color 0.2s;
+}
+
+.notes-container input[type="text"]:focus,
+.notes-container textarea:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 6px rgba(52, 152, 219, 0.3);
+}
+
+/* Table */
+.notes-container table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    font-size: 0.95rem;
+}
+
+.notes-container th,
+.notes-container td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #eee;
+    text-align: left;
+}
+
+.notes-container th {
+    background: #f8f9fa;
+    font-weight: 600;
+    color: #34495e;
+}
+
+.notes-container tr:hover {
+    background: #f5faff;
+}
+
+/* Buttons */
+.notes-container .btn {
+    border-radius: 0.5rem;
+    padding: 0.5rem 1.25rem;
+    font-size: 0.9rem;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.notes-container .btn:hover {
+    transform: translateY(-2px);
+}
+
+.notes-container .btn-primary {
+    background: #3498db;
+    border: none;
+}
+
+.notes-container .btn-primary:hover {
+    background: #2980b9;
+}
+
+.notes-container .btn-warning {
+    background: #f39c12;
+    border: none;
+    color: white;
+}
+
+.notes-container .btn-warning:hover {
+    background: #e67e22;
+}
+
+.notes-container .btn-danger {
+    background: #e74c3c;
+    border: none;
+    color: white;
+}
+
+.notes-container .btn-danger:hover {
+    background: #c0392b;
+}

@@ -1,0 +1,44 @@
+.edit-container {
+    max-width: 900px;
+    margin: 2rem auto;
+    margin-top: 15vh;
+}
+.todo-header {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: white;
+    padding: 1.5rem;
+    border-radius: 12px 12px 0 0;
+}
+.todo-body {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 0 0 12px 12px;
+    border: 1px solid #e9ecef;
+}
+.task-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f1f3f4;
+}
+.task-item:last-child { border-bottom: none; }
+.task-text.completed {
+    text-decoration: line-through;
+    color: #6c757d;
+    opacity: 0.7;
+}
+.task-actions button {
+    border: none;
+    background: none;
+    color: #dc3545;
+    cursor: pointer;
+}
+.add-task {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+.add-task input {
+    flex: 1;
+}

@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Todo{% endblock %}
+
+{% block extra_styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/edit_todo.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container edit-container">
+    <div class="todo-header">
+        <h2><i class="fas fa-edit me-2"></i>Edit Todo</h2>
+    </div>
+
+    <div class="todo-body">
+        <!-- Todo edit form -->
+        <form id="todoForm" method="POST">
+            <div class="mb-3">
+                <label class="form-label">Todo Name</label>
+                <input type="text" class="form-control" name="name" value="{{ todo.name }}" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Due Date</label>
+                <input type="date" class="form-control" name="due_date"
+                    value="{{ todo.due_date.strftime('%Y-%m-%d') if todo.due_date else '' }}">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Priority</label>
+                <select name="priority" class="form-select">
+                    <option value="Low" {% if todo.priority=='Low' %}selected{% endif %}>Low</option>
+                    <option value="Medium" {% if todo.priority=='Medium' %}selected{% endif %}>Medium</option>
+                    <option value="High" {% if todo.priority=='High' %}selected{% endif %}>High</option>
+                </select>
+            </div>
+        </form>
+
+
+        <!-- Task list -->
+        <h5 class="mt-4">Tasks</h5>
+        <div id="tasksList">
+            {% for task in todo.tasks|sort(attribute='position') %}
+            <div class="task-item" data-task-id="{{ task.id }}">
+                <input type="checkbox"
+                       {% if task.status == 1 %}checked{% endif %}
+                       onchange="toggleTask('{{ task.id }}')">
+                <span class="task-text {% if task.status == 1 %}completed{% endif %}">
+                    {{ task.text_content }}
+                </span>
+                <div class="task-actions ms-auto">
+                    <button onclick="deleteTask('{{ task.id }}')" type="button">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Add task -->
+        <div class="add-task">
+            <input type="text" id="newTaskInput" class="form-control" placeholder="New task...">
+            <button type="button" class="btn btn-success" onclick="addTask('{{ todo.id }}')">
+                <i class="fas fa-plus"></i>
+            </button>
+        </div>
+
+        <!-- Actions -->
+        <div class="mt-4 d-flex justify-content-between">
+            <button type="button" class="btn btn-danger" onclick="deleteTodo('{{ todo.id }}')">
+                <i class="fas fa-trash me-1"></i>Delete Todo
+            </button>
+            <button type="submit" class="btn btn-primary" form="todoForm">
+                <i class="fas fa-save me-1"></i>Save Changes
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/edit_todo.js') }}"></script>
+{% endblock %}

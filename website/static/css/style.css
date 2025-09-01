@@ -1,0 +1,78 @@
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Poppins:wght@400;600&display=swap');
+
+:root {
+    --beige: #F6F1E9;
+    --orange: #FF9A00;
+    --normal-font: 'Poppins', sans-serif;
+}
+
+::selection {
+    color: #fff;
+    background-color: var(--orange);
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+}  
+  
+::-webkit-scrollbar-track {
+    background-color: #030c1c;
+}
+   
+::-webkit-scrollbar-thumb {
+    background: var(--orange); 
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: var(--normal-font);
+    box-sizing: border-box;
+}
+
+.alert-container {
+    top: 15vh;
+    z-index: 2000;
+}
+
+body {
+    background-color: var(--beige);
+    font-family: 'Segoe UI', sans-serif;
+}
+
+main {
+    min-height: 85vh;
+}
+
+.footer {
+    font-size: 0.9rem;
+    position: sticky;
+    top: auto;
+}
+
+.footer-logo {
+    max-width: 120px;
+    height: auto;
+}
+
+.footer-title {
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.footer a:hover {
+    color: #ff7b00;
+    text-decoration: none;
+}
+
+.footer ul li i {
+    width: 20px;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .footer-logo {
+        max-width: 100px;
+        margin-bottom: 0.5rem;
+    }
+}

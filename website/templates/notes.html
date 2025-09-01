@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %} Notes {% endblock %}
+
+{% block extra_styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/notes.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="container notes-container">
+    <h1 class="display-3">Notes</h1>
+
+    <!-- Add/Edit Note Form -->
+    <form method="POST" id="noteForm">
+        <input type="hidden" name="note_id" id="note_id">
+        <div class="mb-3">
+            <label class="form-label">Title</label>
+            <input type="text" name="title" id="title" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Content</label>
+            <textarea name="text_content" id="text_content" class="form-control" required></textarea>
+        </div>
+        <button class="btn btn-primary">Save Note</button>
+    </form>
+
+    <hr>
+
+    <!-- Notes List -->
+    {% if notes %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Last Modified</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for note in notes %}
+            <tr data-id="{{ note.id }}"
+                data-title="{{ note.title | e }}"
+                data-text="{{ note.text_content | e }}">
+                <td>{{ note.title }}</td>
+                <td>{{ note.last_modified_date.strftime('%b %d, %Y %I:%M %p') }}</td>
+                <td>
+                    <button class="btn btn-sm btn-warning edit-note-btn">Edit</button>
+                    <form action="{{ url_for('views.delete_note', note_id=note.id) }}" method="POST" style="display:inline-block;">
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this note?')">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p>No notes yet.</p>
+    {% endif %}
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/notes.js') }}"></script>
+{% endblock %}

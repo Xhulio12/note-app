@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Todos{% endblock %}
+
+{% block extra_styles %}
+<link rel="stylesheet" href="static/css/manage_todo.css">
+{% endblock %}
+
+{% block content %}
+<div class="container todos-container">
+    <div class="page-header">
+        <h1 class="mb-2"><i class="fas fa-tasks me-2"></i>Manage Your Todos</h1>
+        <p class="mb-0">Drag and drop to reorder your todos and tasks</p>
+    </div>
+    
+    <div class="reorder-indicator" id="reorderIndicator">
+        <i class="fas fa-arrows-alt me-2"></i>
+        Drag to reorder items
+    </div>
+    
+    {% if todos %}
+        <div id="todosContainer">
+            {% for todo in todos %}
+            <div class="todo-card" data-todo-id="{{ todo.id }}" draggable="true">
+                <div class="todo-header">
+                    <div class="todo-info">
+                        <div class="drag-handle" title="Drag to reorder">
+                            <i class="fas fa-grip-vertical"></i>
+                        </div>
+                        <h3 class="todo-title">{{ todo.name }}</h3>
+                    </div>
+                    
+                    <div class="todo-meta">
+                        <span class="status-badge 
+                            {% if todo.status == 0 %}status-pending
+                            {% elif todo.status == 1 %}status-in-progress  
+                            {% elif todo.status == 2 %}status-completed
+                            {% endif %}">
+                            {% if todo.status == 0 %}Pending
+                            {% elif todo.status == 1 %}In Progress
+                            {% elif todo.status == 2 %}Completed
+                            {% endif %}
+                        </span>
+                        
+                        {% if todo.due_date %}
+                            {% set days_until = (todo.due_date - today).days %}
+                            <small class="due-date 
+                                {% if days_until < 0 %}overdue
+                                {% elif days_until <= 3 %}due-soon
+                                {% endif %}">
+                                <i class="fas fa-calendar me-1"></i>
+                                {% if days_until < 0 %}
+                                    Overdue by {{ -days_until }} day{{ -days_until|pluralize }}
+                                {% elif days_until == 0 %}
+                                    Due today
+                                {% elif days_until == 1 %}
+                                    Due tomorrow
+                                {% else %}
+                                    Due in {{ days_until }} days
+                                {% endif %}
+                            </small>
+                        {% endif %}
+                        
+                    <div class="todo-actions">
+                        <button class="btn-sm btn-edit" onclick="editTodo('{{ todo.id }}')">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn-sm btn-delete" onclick="deleteTodo('{{ todo.id }}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                    </div>
+                </div>
+
+                <div class="tasks-list" id="tasks-{{ todo.id }}">
+                    {% for task in todo.tasks %}
+                    <div class="task-item" data-task-id="{{ task.id }}" draggable="true">
+                        <input type="checkbox" 
+                            class="task-checkbox" 
+                            {% if task.status == 1 %}checked{% endif %}
+                            onchange="toggleTask('{{ task.id }}')">
+                        <div class="task-content">
+                            <p class="task-text {% if task.status == 1 %}completed{% endif %}">
+                                {{ task.text_content }}
+                            </p>
+                        </div>
+                        <div class="task-drag-handle" title="Drag to reorder">
+                            <i class="fas fa-grip-lines"></i>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                
+                <div class="progress-section">
+                    <div class="progress">
+                        <div class="progress-bar" data-width="{{ todo.completion_percentage }}"></div>
+                    </div>
+                    <div class="progress-text">
+                        {{ "%.0f"|format(todo.completion_percentage) }}% Complete 
+                        ({{ todo.tasks.filter_by(status=1).count() }} of {{ todo.tasks.count() }} tasks)
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <i class="fas fa-clipboard-list"></i>
+            <h3>No todos yet</h3>
+            <p>Create your first todo to get started with organizing your tasks!</p>
+            <a href="{{ url_for('views.add_todo') }}" class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i>Create Todo
+            </a>
+        </div>
+    {% endif %}
+</div>
+
+<!-- Floating Action Buttons -->
+<div class="floating-actions">
+    <button class="fab fab-save" title="Save Order" onclick="saveOrder()" id="saveOrderBtn" style="display: none;">
+        <i class="fas fa-save"></i>
+    </button>
+    <a href="{{ url_for('views.add_todo') }}" class="fab fab-primary" title="Add Todo">
+        <i class="fas fa-plus"></i>
+    </a>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/manage_todo.js') }}"></script>
+{% endblock %}
