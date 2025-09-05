@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}About Us{% endblock %}
+
+{% block extra_styles %}
+    <link rel="stylesheet" href="static/css/about.css">
+{% endblock %}
+
+{% block navbar_links %}
+<li class="nav-item mx-auto">
+	<a href="{{ url_for('auth.login') }}" class="nav-link nav-under">Log In</a>
+</li>
+<li class="nav-item mx-auto">
+	<a href="{{ url_for('views.home') }}" class="nav-link nav-under">Home</a>
+</li>
+{% endblock %}
+
+{% block content %}
+<section class="about-container container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 text-center">
+            <h1 class="mb-4">About This App</h1>
+            <p class="lead">
+                Welcome to <strong>NoteApp</strong> — a simple, personal productivity app created to help you 
+                manage your thoughts, reminders, tasks, and payments all in one place.
+            </p>
+            <p>
+                The idea behind this project is to keep things <em>organized, minimal, and practical</em>. 
+                Whether you're jotting down quick notes, keeping track of todos, or monitoring payments, this app 
+                provides an easy-to-use interface without unnecessary clutter.
+            </p>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title">The Mission</h3>
+                    <p class="card-text">
+                        To create a lightweight and user-friendly application that helps individuals
+                        manage their daily tasks and notes effectively, while keeping simplicity and usability at the core.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title">The Developer</h3>
+                    <p class="card-text">
+                        This app was designed and built by <strong>Xhulio Veizaj</strong>.  
+                        It's still under active development, with future plans for features like 
+                        profile management, password reset, and history tracking.  
+                        The goal is to make this tool even more useful over time.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5 text-center" id="contact">
+        <div class="col">
+            <h4>Get in Touch</h4>
+            <p>
+                Have feedback, ideas, or just want to say hi?  
+                Feel free to reach out through any of the channels below:
+            </p>
+            <div class="social-icons mt-3">
+                <a href="mailto:xhulioveizaj@gmail.com" class="social-link" target="_blank">
+                    <i class="fa-solid fa-envelope"></i>
+                </a>
+                <a href="https://www.linkedin.com/in/xhulio-veizaj-1721a91b5/" class="social-link" target="_blank">
+                    <i class="fa-brands fa-linkedin"></i>
+                </a>
+                <a href="https://wa.me/355683235768" class="social-link" target="_blank">
+                    <i class="fa-brands fa-whatsapp"></i>
+                </a>
+                <a href="https://www.instagram.com/xhulio.v/" class="social-link" target="_blank">
+                    <i class="fa-brands fa-instagram"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+</section>
+{% endblock %}

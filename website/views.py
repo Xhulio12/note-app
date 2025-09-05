@@ -442,8 +442,12 @@ def add_task(todo_id):
         return jsonify({
             'success': True,
             'message': 'Task added successfully',
-            'task_id': new_task.id,
-            'position': new_task.position
+            'task': {
+                'id': new_task.id,
+                'text_content': new_task.text_content,
+                'status': new_task.status,
+                'position': new_task.position
+            }
         })
 
     except Exception as e:
@@ -514,8 +518,11 @@ def delete_note(note_id):
     return redirect(url_for("views.notes"))
 
 
-
 @views.route('/profile')
 @login_required
 def profile():
     pass
+
+@views.route('/about')
+def about():
+    return render_template('about.html', user=current_user)
