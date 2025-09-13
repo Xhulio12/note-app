@@ -51,7 +51,7 @@ Clean, responsive interface with quick actions for creating and managing items.
    cd note-app
     ```
    
-2. Clone the repository:
+2. Create a virtual environment:
    ```bash
     python -m venv .venv
     .venv\Scripts\activate     # Windows
