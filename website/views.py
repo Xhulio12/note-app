@@ -116,7 +116,7 @@ def manage_todos():
         )
 
     except Exception as e:
-        flash(f'Error loading todos: {str(e)}', 'danger')
+        flash(f'Error loading todos: {str(e)}', 'error')
         return redirect(url_for('views.home'))
 
 
@@ -462,9 +462,9 @@ def notes():
         text_content = request.form.get("text_content")
 
         if not title.strip():
-            flash("Note title is required.", "danger")
+            flash("Note title is required.", "error")
         elif not text_content.strip():
-            flash("Note content cannot be empty.", "danger")
+            flash("Note content cannot be empty.", "error")
         else:
             new_note = Note(
                 user_id=current_user.id,
@@ -485,16 +485,16 @@ def notes():
 def edit_note(note_id):
     note = Note.query.get_or_404(note_id)
     if note.user_id != current_user.id:
-        flash("You are not allowed to edit this note.", "danger")
+        flash("You are not allowed to edit this note.", "error")
         return redirect(url_for("views.notes"))
 
     title = request.form.get("title")
     text_content = request.form.get("text_content")
 
     if not title.strip():
-        flash("Note title is required.", "danger")
+        flash("Note title is required.", "error")
     elif not text_content.strip():
-        flash("Note content cannot be empty.", "danger")
+        flash("Note content cannot be empty.", "error")
     else:
         note.title = title
         note.text_content = text_content
@@ -509,7 +509,7 @@ def edit_note(note_id):
 def delete_note(note_id):
     note = Note.query.get_or_404(note_id)
     if note.user_id != current_user.id:
-        flash("You are not allowed to delete this note.", "danger")
+        flash("You are not allowed to delete this note.", "error")
         return redirect(url_for("views.notes"))
 
     db.session.delete(note)
