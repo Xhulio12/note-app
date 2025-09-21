@@ -20,6 +20,7 @@
                 <th>Amount</th>
                 <th>Active</th>
                 <th>Notes</th>
+                <th>Last Updated</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -32,12 +33,14 @@
                 data-pmt_amount="{{ payment.pmt_amount }}"
                 data-notes="{{ payment.notes | e }}"
                 data-is_active="{{ 'true' if payment.is_active else 'false' }}"
+                data-updated_date="{{ payment.updated_date }}"
             >
                 <td>{{ payment.name }}</td>
                 <td>{{ payment.pmt_date.strftime('%d.%m.%Y') if payment.pmt_date else '' }}</td>
                 <td>{{ payment.pmt_amount }}</td>
                 <td>{{ "Yes" if payment.is_active else "No" }}</td>
                 <td>{{ payment.notes or '-' }}</td>
+                <td>{{ payment.updated_date.strftime("%d-%m-%Y") }}</td>
                 <td>
                     <button class="btn btn-primary btn-sm edit-payment-btn">Edit</button>
                     <form action="{{ url_for('views.delete_payment', id=payment.id) }}" method="POST" style="display:inline-block;">

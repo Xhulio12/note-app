@@ -2,7 +2,7 @@ from . import db
 from flask_login import UserMixin
 from sqlalchemy.sql import func
 from sqlalchemy import event
-
+from datetime import datetime as dt
 
 class User(UserMixin, db.Model):
     __tablename__ = "user"
@@ -90,15 +90,24 @@ class ToDo(db.Model):
     )
 
     def update_status(self):
-        """Update status based on tasks."""
-        if not self.tasks.first():
-            self.status = 0  # no tasks = pending
-        elif self.tasks.filter_by(status=0).first() is None:
-            self.status = 2  # all tasks completed
-        elif self.tasks.filter_by(status=1).first():
-            self.status = 1  # has completed tasks = in_progress
+        total_tasks = self.tasks.count()
+
+        if total_tasks == 0:
+            self.status = 0
+            self.completed_date = None
+            return
+
+        completed_tasks = self.tasks.filter_by(status=1).count()
+
+        if completed_tasks == total_tasks:
+            self.status = 2
+            self.completed_date = dt.utcnow()
+        elif completed_tasks > 0:
+            self.status = 1
+            self.completed_date = None
         else:
-            self.status = 0  # pending
+            self.status = 0
+            self.completed_date = None
 
     @property
     def completion_percentage(self):

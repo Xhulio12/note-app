@@ -102,7 +102,7 @@ def manage_todos():
                 ToDo.user_id == current_user.id,
                 ToDo.is_active == True
             )
-        ).order_by(ToDo.created_date.asc()).all()
+        ).order_by(ToDo.due_date.asc()).all()
 
         # Get today's date for due date calculations
         today = date.today()
@@ -125,7 +125,7 @@ def manage_todos():
 def add_todo():
     if request.method == 'GET':
         return render_template('add_todo.html',
-                               user=current_user,  # Add this
+                               user=current_user,
                                today=date.today())
 
     elif request.method == 'POST':
@@ -139,7 +139,7 @@ def add_todo():
             if not name:
                 flash('Todo name is required!', 'error')
                 return render_template('add_todo.html',
-                                       user=current_user,  # Add this
+                                       user=current_user,
                                        today=date.today())
 
             # Filter empty tasks
@@ -147,7 +147,7 @@ def add_todo():
             if not valid_tasks:
                 flash('At least one task is required!', 'error')
                 return render_template('add_todo.html',
-                                       user=current_user,  # Add this
+                                       user=current_user,
                                        today=date.today())
 
             # Handle due date
@@ -155,12 +155,11 @@ def add_todo():
             if due_date_str:
                 due_date = datetime.strptime(due_date_str, '%Y-%m-%d').date()
 
-            # Create todo
+            # Create todo (status will be set properly later)
             new_todo = ToDo(
                 name=name,
                 user_id=current_user.id,
                 due_date=due_date,
-                status=0,
                 is_active=True
             )
 
@@ -176,6 +175,9 @@ def add_todo():
                     position=i
                 )
                 db.session.add(task)
+
+            # Now update the todo status based on its tasks
+            new_todo.update_status()
 
             db.session.commit()
             flash(f'Todo "{name}" created with {len(valid_tasks)} tasks!', 'success')
@@ -229,14 +231,11 @@ def edit_todo(todo_id):
     return render_template('edit_todo.html', todo=todo, user=current_user)
 
 
-
-# API Routes for AJAX functionality
 @views.route('/api/task/<int:task_id>/toggle', methods=['POST'])
 @login_required
 def toggle_task(task_id):
     """Toggle the completion status of a task."""
     try:
-        # Find the task and verify ownership through the todo
         task = ToDoTask.query.join(ToDo).filter(
             and_(
                 ToDoTask.id == task_id,
@@ -247,19 +246,13 @@ def toggle_task(task_id):
         if not task:
             return jsonify({'success': False, 'error': 'Task not found'}), 404
 
-        # Toggle the status (0 = pending, 1 = completed)
+        # Toggle task
         task.status = 1 if task.status == 0 else 0
         task.updated_date = datetime.utcnow()
 
-        # Update the parent todo's status and completion date
+        # Update parent todo
         todo = task.todo
         todo.update_status()
-
-        if todo.status == 2:  # completed
-            todo.completed_date = datetime.utcnow()
-        else:
-            todo.completed_date = None
-
         todo.updated_date = datetime.utcnow()
 
         db.session.commit()
